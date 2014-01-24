@@ -18,7 +18,7 @@
 - (NSString *)generateUIDwithKey:(NSString *)key;
 
 /**
- *  读取缓存
+ *
  *
  *  @param key
  *
@@ -31,7 +31,7 @@
  *  @param data
  *  @param key
  *
- *  @return 是否成功
+ *  @return
  */
 - (NSString *)setObject:(id <NSCoding>)object forKey:(NSString *)key;
 /**
