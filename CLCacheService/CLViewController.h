@@ -10,4 +10,8 @@
 
 @interface CLViewController : UIViewController
 
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView *activityIndicator;
+
+- (IBAction)refresh:(id)sender;
+
 @end

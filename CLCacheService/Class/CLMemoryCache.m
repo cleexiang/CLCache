@@ -12,17 +12,18 @@
 
 @implementation CLMemoryCache
 
-- (BOOL)existCacheForKey:(NSString *)key {
-    BOOL exist = NO;
-    id obj = [self.cache objectForKey:key];
-    if (obj) {
-        exist = YES;
+- (id)init {
+    self = [super init];
+    if (self) {
+        _cache = [[NSCache alloc] init];
     }
-    return exist;
+    
+    return self;
 }
 
-- (id)objectForKey:(NSString *)key error:(NSError **)error {
-    id object = [self.cache objectForKey:key];
+- (id)objectForKey:(NSString *)key {
+    NSString *identifier = [self generateUIDwithKey:key];
+    id object = [self.cache objectForKey:identifier];
     NSNumber *expireTime = objc_getAssociatedObject(object, @"expireTime");
     long currentTime = (long)[[NSDate date] timeIntervalSince1970];
     if (currentTime > [expireTime longValue]) {
@@ -45,6 +46,15 @@
     
     [self.cache setObject:object forKey:identifier];
     return nil;
+}
+
+- (NSData *)dataForKey:(NSString *)key {
+    return [self objectForKey:key];
+}
+
+- (NSString *)setData:(NSData *)data forKey:(NSString *)key {
+    NSString *identifier = [self generateUIDwithKey:key];
+    return [self setObject:data expireTime:self.policy.expireTime withIdentifier:identifier];
 }
 
 - (BOOL)removeObjectForKey:(NSString *)key {

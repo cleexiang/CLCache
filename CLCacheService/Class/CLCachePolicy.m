@@ -12,14 +12,16 @@
 
 + (instancetype)defaultCachePolicy {
     CLCachePolicy *policy = [[CLCachePolicy alloc] init];
+    policy.isRefresh = NO;
+    policy.expireTime = 120;
+    policy.level = CLCachePolicyDisk;
     return policy;
 }
 
 - (id)init {
     self = [super init];
     if (self) {
-        self.isRefresh = NO;
-        self.expireTime = 120;
+
     }
     
     return self;

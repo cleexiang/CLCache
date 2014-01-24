@@ -45,26 +45,21 @@
 - (id<NSCoding>)objectForKey:(NSString *)key {
     NSError *error = nil;
     NSString *identifier = [self generateUIDwithKey:key];
-    NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
-    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cachePath error:&error];
+    NSString *cacheDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
+    NSString *subDir = [cacheDir stringByAppendingPathComponent:identifier];
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:subDir error:&error];
     if (error) {
         NSLog(@"%@", [error localizedDescription]);
     }
     for (NSString *fileName in files) {
-        if ([fileName hasPrefix:identifier]) {
-            NSArray *arr = [fileName componentsSeparatedByString:@"_"];
-            long lastTime = 0;
-            if (arr && [arr count] == 2) {
-                lastTime = [arr[1] longValue];
-            }
-            long currentTime = (long)[[NSDate date] timeIntervalSince1970];
-            if (currentTime > lastTime) {
-                [[NSFileManager defaultManager] removeItemAtPath:[cachePath stringByAppendingPathComponent:fileName]
-                                                           error:nil];
-                return nil;
-            } else {
-                return [NSKeyedUnarchiver unarchiveObjectWithFile:[cachePath stringByAppendingPathComponent:fileName]];
-            }
+        NSTimeInterval lastTime = [fileName doubleValue];
+        NSTimeInterval currentTime = [[NSDate date] timeIntervalSince1970];
+        if (currentTime > lastTime) {
+            [[NSFileManager defaultManager] removeItemAtPath:[subDir stringByAppendingPathComponent:fileName]
+                                                       error:nil];
+            return nil;
+        } else {
+            return [NSKeyedUnarchiver unarchiveObjectWithFile:[subDir stringByAppendingPathComponent:fileName]];
         }
     }
     return nil;
@@ -73,26 +68,21 @@
 - (NSData *)dataForKey:(NSString *)key {
     NSError *error = nil;
     NSString *identifier = [self generateUIDwithKey:key];
-    NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
-    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cachePath error:&error];
+    NSString *cacheDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
+    NSString *subDir = [cacheDir stringByAppendingPathComponent:identifier];
+    NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:subDir error:&error];
     if (error) {
         NSLog(@"%@", [error localizedDescription]);
     }
     for (NSString *fileName in files) {
-        if ([fileName hasPrefix:identifier]) {
-            NSArray *arr = [fileName componentsSeparatedByString:@"_"];
-            long lastTime = 0;
-            if (arr && [arr count] == 2) {
-                lastTime = [arr[1] longValue];
-            }
-            long currentTime = (long)[[NSDate date] timeIntervalSince1970];
-            if (currentTime > lastTime) {
-                [[NSFileManager defaultManager] removeItemAtPath:[cachePath stringByAppendingPathComponent:fileName]
-                                                           error:nil];
-                return nil;
-            } else {
-                return [NSData dataWithContentsOfFile:[cachePath stringByAppendingPathComponent:fileName]];
-            }
+        NSTimeInterval lastTime = [fileName doubleValue];
+        NSTimeInterval currentTime = [[NSDate date] timeIntervalSince1970];
+        if (currentTime > lastTime) {
+            [[NSFileManager defaultManager] removeItemAtPath:[subDir stringByAppendingPathComponent:fileName]
+                                                       error:nil];
+            return nil;
+        } else {
+            return [NSData dataWithContentsOfFile:[subDir stringByAppendingPathComponent:fileName]];
         }
     }
     return nil;
@@ -104,17 +94,24 @@
 }
 
 - (NSString *)setObject:(id <NSCoding>)object expireTime:(NSTimeInterval)expireTime withIdentifier:(NSString *)identifier {
-    NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
-    BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:cachePath];
+    NSString *cacheDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
+    NSString *subDir = [cacheDir stringByAppendingPathComponent:identifier];
+    BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:subDir];
     NSError *err = nil;
     if (!isExist) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:cachePath
+        [[NSFileManager defaultManager] createDirectoryAtPath:subDir
                                   withIntermediateDirectories:YES
                                                    attributes:nil
                                                         error:&err];
+    } else {
+        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:subDir error:&err];
+        for (NSString *fileName in files) {
+            [[NSFileManager defaultManager] removeItemAtPath:[subDir stringByAppendingPathComponent:fileName]
+                                                       error:&err];
+        }
     }
     NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
-    NSString *path = [cachePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_%.0f", identifier, time+expireTime]];
+    NSString *path = [subDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%.0f", time+expireTime]];
     BOOL success = [NSKeyedArchiver archiveRootObject:object toFile:path];
     
     if (success) {
@@ -130,17 +127,24 @@
 }
 
 - (NSString *)setData:(NSData *)data expireTime:(NSTimeInterval)expireTime withIdentifier:(NSString *)identifier {
-    NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
-    BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:cachePath];
+    NSString *cacheDir = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:kCachePath];
+    NSString *subDir = [cacheDir stringByAppendingPathComponent:identifier];
+    BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:subDir];
     NSError *err = nil;
     if (!isExist) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:cachePath
+        [[NSFileManager defaultManager] createDirectoryAtPath:subDir
                                   withIntermediateDirectories:YES
                                                    attributes:nil
                                                         error:&err];
+    } else {
+        NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:subDir error:&err];
+        for (NSString *fileName in files) {
+            [[NSFileManager defaultManager] removeItemAtPath:[subDir stringByAppendingPathComponent:fileName]
+                                                       error:&err];
+        }
     }
     NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
-    NSString *path = [cachePath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_%.0f", identifier, time+expireTime]];
+    NSString *path = [subDir stringByAppendingPathComponent:[NSString stringWithFormat:@"%.0f", time+expireTime]];
     BOOL success = [data writeToFile:path
                              options:NSDataWritingAtomic
                                error:&err];

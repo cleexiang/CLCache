@@ -26,6 +26,7 @@
 		C92C962A188F9EE400F33A83 /* CLMemoryCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C92C9629188F9EE400F33A83 /* CLMemoryCache.m */; };
 		C92C962D188F9EF200F33A83 /* CLDiskCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C92C962C188F9EF200F33A83 /* CLDiskCache.m */; };
 		C9390751189160EB00ACD6BD /* RXMLElement.m in Sources */ = {isa = PBXBuildFile; fileRef = C9390750189160EB00ACD6BD /* RXMLElement.m */; };
+		C93907531891619B00ACD6BD /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C93907521891619B00ACD6BD /* libxml2.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		C92C962C188F9EF200F33A83 /* CLDiskCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CLDiskCache.m; sourceTree = "<group>"; };
 		C939074F189160EB00ACD6BD /* RXMLElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXMLElement.h; sourceTree = "<group>"; };
 		C9390750189160EB00ACD6BD /* RXMLElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RXMLElement.m; sourceTree = "<group>"; };
+		C93907521891619B00ACD6BD /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C93907531891619B00ACD6BD /* libxml2.dylib in Frameworks */,
 				C92C95DD188F6A8100F33A83 /* CoreGraphics.framework in Frameworks */,
 				C92C95DF188F6A8100F33A83 /* UIKit.framework in Frameworks */,
 				C92C95DB188F6A8100F33A83 /* Foundation.framework in Frameworks */,
@@ -116,6 +119,7 @@
 		C92C95D9188F6A8100F33A83 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C93907521891619B00ACD6BD /* libxml2.dylib */,
 				C92C95DA188F6A8100F33A83 /* Foundation.framework */,
 				C92C95DC188F6A8100F33A83 /* CoreGraphics.framework */,
 				C92C95DE188F6A8100F33A83 /* UIKit.framework */,
@@ -439,6 +443,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CLCacheService/CLCacheService-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${SDK_DIR}\"/usr/include/libxml2",
+				);
 				INFOPLIST_FILE = "CLCacheService/CLCacheService-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -454,6 +462,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CLCacheService/CLCacheService-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${SDK_DIR}\"/usr/include/libxml2",
+				);
 				INFOPLIST_FILE = "CLCacheService/CLCacheService-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";

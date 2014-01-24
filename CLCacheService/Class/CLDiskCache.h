@@ -14,8 +14,4 @@
 
 - (BOOL)existCacheForKey:(NSString *)key path:(NSString **)path;
 
-- (NSData *)dataForKey:(NSString *)key;
-
-- (NSString *)setData:(NSData *)data forKey:(NSString *)key;
-
 @end

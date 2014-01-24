@@ -34,6 +34,7 @@
             cache = [[CLMemoryCache alloc] init];
             break;
     }
+    cache.policy = policy;
     return cache;
 }
 
@@ -47,5 +48,28 @@
     return [hash lowercaseString];
 }
 
+- (id)objectForKey:(NSString *)key {
+    return nil;
+}
+
+- (NSString *)setObject:(id <NSCoding>)object forKey:(NSString *)key {
+    return nil;
+}
+
+- (NSData *)dataForKey:(NSString *)key {
+    return nil;
+}
+
+- (NSString *)setData:(NSData *)data forKey:(NSString *)key {
+    return nil;
+}
+
+- (BOOL)removeObjectForKey:(NSString *)key {
+    return NO;
+}
+
+- (BOOL)removeAllObjects {
+    return NO;
+}
 
 @end

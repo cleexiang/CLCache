@@ -17,27 +17,40 @@
 
 - (NSString *)generateUIDwithKey:(NSString *)key;
 
-+ (BOOL)existCacheForKey:(NSString *)key;
-
 /**
  *  读取缓存
  *
- *  @param key 缓存的键值
+ *  @param key
  *
- *  @return 缓存数据
+ *  @return object
  */
 - (id)objectForKey:(NSString *)key;
-
 /**
  *
  *
- *  @param data 数据
- *  @param key 键值
+ *  @param data
+ *  @param key
  *
  *  @return 是否成功
  */
 - (NSString *)setObject:(id <NSCoding>)object forKey:(NSString *)key;
-
+/**
+ *  return data
+ *
+ *  @param key
+ *
+ *  @return data
+ */
+- (NSData *)dataForKey:(NSString *)key;
+/**
+ *  Description
+ *
+ *  @param data
+ *  @param key
+ *
+ *  @return
+ */
+- (NSString *)setData:(NSData *)data forKey:(NSString *)key;
 /**
  *  remove object with key
  *
@@ -50,7 +63,7 @@
 /**
  *  remove all cache data
  *
- *  @return 是否成功
+ *  @return
  */
 - (BOOL)removeAllObjects;
 
